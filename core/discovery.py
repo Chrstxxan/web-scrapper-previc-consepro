@@ -1,5 +1,5 @@
 """
-discovery para varrer o site PREVIC e trazer docs relevantes.
+este é o discovery antigo, foi o esqueleto que criei antes de modularizar o codigo, ele ainda funciona, mas está desatualizado em relação ao código modularizado.
 """
 
 import requests

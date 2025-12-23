@@ -5,24 +5,25 @@ coracao do sistema, aqui ele descobre os links e arquivos a partir das seeds, na
 import time
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
-from config import DOMAIN_ALLOW, FILE_EXTENSIONS, REQUEST_DELAY
+from config import DOMAIN_ALLOW, FILE_EXTENSIONS, REQUEST_DELAY, PATH_FOCUSED_ALLOW
 
-def is_internal(url):
+def is_internal(url: str) -> bool:
     # Verifica se a URL pertence aos domínios permitidos.
-    netloc = urlparse(url).netloc.lower()
-    return any (d in netloc for d in DOMAIN_ALLOW)
+    u = url.lower()
+    return any(d in u for d in DOMAIN_ALLOW)
 
 def is_file(url):
     # Verifica se a URL termina com uma das extensões de arquivo especificadas.
     return url.lower().endswith(FILE_EXTENSIONS)
 
-def crawl(session, seeds, state, downloader, storage, out_base, logger):
-    queue = list(seeds)
-    logger.info(f"Iniciando o crawl com {len(queue)} seeds.")
+def crawl(session, seeds, state, downloader, storage, out_base, logger, mode):
+    queue = list(state.queue) if state.queue else list(seeds)
+    logger.info(f"Iniciando o crawl com {len(queue)} URLs na fila.")
 
     while queue:
         url = queue.pop(0)
         logger.info(f"Visitando: {url}")
+        state.save_queue(queue)
         if url in state.visited: 
             continue  # Já visitado
 
@@ -41,6 +42,9 @@ def crawl(session, seeds, state, downloader, storage, out_base, logger):
         for a in soup.find_all("a", href=True):
             href = urljoin(url, a["href"].strip())
             parsed = urlparse(href)
+            if mode == "focused":
+                if not any(p in parsed.path for p in PATH_FOCUSED_ALLOW):
+                    continue
 
             if parsed.fragment: 
                 continue  # Ignora fragmentos
@@ -84,4 +88,7 @@ def crawl(session, seeds, state, downloader, storage, out_base, logger):
                 if href not in state.visited:
                     queue.append(href)
                     logger.debug(f"URL adicionada à fila: {href}")
+                    state.save_queue(queue)
         time.sleep(REQUEST_DELAY)
+    state.queue_path.unlink(missing_ok=True)
+    logger.info("Fila finalizada e limpa.")

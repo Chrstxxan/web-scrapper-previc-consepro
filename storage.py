@@ -7,7 +7,7 @@ from datetime import datetime
 
 def append_index(base, meta: dict):
     meta["timestamp"] = datetime.utcnow().isoformat()
-    path = base / "index.json"
+    path = base / "index.jsonl"
 
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(meta, ensure_ascii=False) + "\n")

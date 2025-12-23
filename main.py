@@ -3,7 +3,7 @@ o player de todos os módulos, ele que vai orquestrar o funcionamento do crawler
 '''
 
 import requests
-from config import SEEDS, OUT_BASE, HEADERS
+from config import SEEDS_FULL, SEEDS_FOCUSED, OUT_BASE, HEADERS
 from state import State
 from downloader import download
 from discovery import crawl
@@ -11,6 +11,11 @@ from storage import append_index
 from logger import setup_logger
 
 def main():
+    MODE = "focused" # "full" ou "focused"
+    logger.info(f"Modo de execução: {MODE.upper()}")
+
+    seeds = SEEDS_FULL if MODE == "full" else SEEDS_FOCUSED
+
     session = requests.Session()
     session.headers.update(HEADERS)
 
@@ -22,12 +27,13 @@ def main():
 
     crawl(
         session=session,
-        seeds=SEEDS,
+        seeds=seeds,
         state=state,
         downloader=download,
         storage=append_index,
         out_base=OUT_BASE,
-        logger=logger
+        logger=logger,
+        mode = MODE
     )
     logger.info("Scraper finalizado")
 

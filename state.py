@@ -11,10 +11,12 @@ class State:
         self.visited_path = base / "visited.txt"
         self.hashes_path = base / "hashes.txt"
         self.failed_path = base / "failed.txt"
+        self.queue_path = base / "queue.txt"
 
         self.visited = self.load(self.visited_path)
         self.hashes = self.load(self.hashes_path)
         self.failed = self.load(self.failed_path)
+        self.queue = self.load(self.queue_path)
 
     def load(self, path: Path) -> set:
         if not path.exists():
@@ -32,3 +34,7 @@ class State:
     def save_failed(self, url: str):
         self.failed.add(url)
         self.failed_path.write_text("\n".join(self.failed), encoding="utf-8")
+
+    def save_queue(self, queue: list):
+        self.queue = list(queue)
+        self.queue_path.write_text("\n".join(self.queue), encoding="utf-8")

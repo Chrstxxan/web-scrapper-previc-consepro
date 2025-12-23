@@ -3,7 +3,7 @@ from pathlib import Path
 
 def setup_logger(log_dir: Path):
     log_dir.mkdir(parents=True, exist_ok=True)
-    log_file = log_dir / "creawler.log"
+    log_file = log_dir / "crawler.log"
 
     logger = logging.getLogger("PREVIC")
     logger.setLevel(logging.INFO)

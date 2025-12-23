@@ -4,12 +4,28 @@ este módulo serve como a configuração geral do scrapper, todas as seeds, domi
 
 from pathlib import Path
 
-SEEDS = [
-    "https://www.gov.br/previc/pt-br",
+SEEDS_FULL = [
+    "https://www.gov.br/previc/pt-br"
+]
+
+SEEDS_FOCUSED = [
+    "https://www.gov.br/previc/pt-br/sistemas",
+    "https://www.gov.br/previc/pt-br/publicacoes",
     "https://sisconp.previc.gov.br/"
 ]
 
-DOMAIN_ALLOW = ["gov.br", "previc.gov.br", "sisconp.previc.gov.br"]
+DOMAIN_ALLOW = [
+    "gov.br/previc",
+    "sisconp.previc.gov.br"
+]
+
+PATH_FOCUSED_ALLOW = [
+    "/sistemas",
+    "/publicacoes",
+    "/dados",
+    "/estatisticas",
+    "/arquivos"
+]
 
 FILE_EXTENSIONS = (".zip", ".pdf", ".csv", ".xls", ".xlsx", ".doc", ".docx")
 
