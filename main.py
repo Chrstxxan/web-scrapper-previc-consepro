@@ -12,7 +12,6 @@ from logger import setup_logger
 
 def main():
     MODE = "focused" # "full" ou "focused"
-    logger.info(f"Modo de execução: {MODE.upper()}")
 
     seeds = SEEDS_FULL if MODE == "full" else SEEDS_FOCUSED
 
@@ -23,6 +22,7 @@ def main():
     state = State(OUT_BASE)
 
     logger = setup_logger(OUT_BASE / "logs")
+    logger.info(f"Modo de execução: {MODE.upper()}")
     logger.info("Iniciando o crawler...")
 
     crawl(
