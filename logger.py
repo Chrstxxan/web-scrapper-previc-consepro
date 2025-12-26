@@ -13,7 +13,7 @@ def setup_logger(log_dir: Path):
     
     formatter = logging.Formatter(
         "[%(asctime)s] [%(levelname)s] %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
+        datefmt="%d-%m-%Y %H:%M:%S"
     )
 
     # Terminal
