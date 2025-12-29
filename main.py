@@ -11,7 +11,7 @@ from storage import append_index
 from logger import setup_logger
 
 def main():
-    MODE = "focused" # "full" ou "focused"
+    MODE = "full" # "full" ou "focused"
 
     seeds = SEEDS_FULL if MODE == "full" else SEEDS_FOCUSED
 

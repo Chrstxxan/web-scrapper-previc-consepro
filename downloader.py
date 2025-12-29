@@ -3,7 +3,8 @@ módulo onde a mágica do scrapper acontece: baixa os arquivos das urls visitada
 '''
 
 import hashlib
-from urllib.parse import urlparse
+import re
+from urllib.parse import urlparse, unquote
 from pathlib import Path
 
 def sha1_bytes(b: bytes) -> str:
@@ -19,12 +20,25 @@ def download(session, url: str, out_dir: Path, state, referer: str):
     if h in state.hashes:
         return None  # Já baixado
     
-    ext = Path(urlparse(url).path).suffix.lower()
+    # 🔹 nome original do arquivo a partir da URL
+    parsed = urlparse(url)
+    orig_name = Path(unquote(parsed.path)).name
+
+    if not orig_name:
+        orig_name = "arquivo"
+
+    # 🔹 sanitiza o nome (seguro para Windows/Linux)
+    safe_name = re.sub(r"[^a-zA-Z0-9._-]", "_", orig_name).lower()
+
+    ext = Path(safe_name).suffix.lower()
     if not ext:
         return None  # Sem extensão válida
-    
+
     out_dir.mkdir(parents=True, exist_ok=True)
-    dest = out_dir / f"{h}{ext}"
+
+    # 🔹 NOME HÍBRIDO: hash + nome humano
+    filename = f"{h}__{safe_name}"
+    dest = out_dir / filename
 
     dest.write_bytes(r.content)
     state.save_hash(h)
